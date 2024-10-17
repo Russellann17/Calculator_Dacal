@@ -63,9 +63,9 @@ namespace Calculator_Dacal.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap calculator {
+        internal static System.Drawing.Bitmap delete_back {
             get {
-                object obj = ResourceManager.GetObject("calculator", resourceCulture);
+                object obj = ResourceManager.GetObject("delete-back", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

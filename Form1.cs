@@ -7,15 +7,15 @@ namespace Calculator_Dacal
     public partial class Form1 : Form
     {
         private string currentExpression;
-        private bool isEqualsPressed;
+        private bool isEqualsClicked;
+        private string currentHistory;
 
         public Form1()
         {
             InitializeComponent();
             currentExpression = "";
-            isEqualsPressed = false;
+            isEqualsClicked = false;
         }
-
         private bool IsLastCharOperator()
         {
             if (string.IsNullOrWhiteSpace(currentExpression))
@@ -24,7 +24,6 @@ namespace Calculator_Dacal
             char lastChar = currentExpression[currentExpression.Length - 1];
             return lastChar == '+' || lastChar == '-' || lastChar == '*' || lastChar == '/';
         }
-
         private bool HasMultipleDecimalPoints()
         {
             string[] numbers = currentExpression.Split(new char[] { '+', '-', '*', '/' });
@@ -35,7 +34,6 @@ namespace Calculator_Dacal
             }
             return false;
         }
-
         //Numbers
         private void PassNumber(string number)
         {
@@ -45,18 +43,9 @@ namespace Calculator_Dacal
             }
             currentExpression += number;
             txtDisplay.Text = currentExpression;
-            isEqualsPressed = false;
+            isEqualsClicked = false;
         }
-        private void btn0_Click(object sender, EventArgs e)
-        {
-            if (txtDisplay.Text == "Cannot divide by zero")
-            {
-                txtDisplay.Clear();
-            }
-            currentExpression += "0";
-            txtDisplay.Text = currentExpression;
-            isEqualsPressed = false;
-        }
+        private void btn0_Click(object sender, EventArgs e) => PassNumber("0");
         private void btn1_Click(object sender, EventArgs e) => PassNumber("1");
         private void btn2_Click(object sender, EventArgs e) => PassNumber("2");
         private void btn3_Click(object sender, EventArgs e) => PassNumber("3");
@@ -66,16 +55,16 @@ namespace Calculator_Dacal
         private void btn7_Click(object sender, EventArgs e) => PassNumber("7");
         private void btn8_Click(object sender, EventArgs e) => PassNumber("8");
         private void btn9_Click(object sender, EventArgs e) => PassNumber("9");
-       
+        //Decimal Point
         private void btnDot_Click(object sender, EventArgs e)
         {
-            if (!HasMultipleDecimalPoints())
+            if (string.IsNullOrEmpty(currentExpression) || IsLastCharOperator())
+            {
+                PassNumber("0.");
+            }
+            else if (!HasMultipleDecimalPoints())
             {
                 PassNumber(".");
-            }
-            else
-            {
-                return;
             }
         }
         // Operations button
@@ -86,7 +75,7 @@ namespace Calculator_Dacal
                 currentExpression += operators;
                 txtDisplay.Text = currentExpression;
                 txtresult.Text = "";
-                isEqualsPressed = false;
+                isEqualsClicked = false;
             }
             else
             {
@@ -97,29 +86,36 @@ namespace Calculator_Dacal
         private void btnSubtract_Click(object sender, EventArgs e) => Operator("-");
         private void btnMultiply_Click(object sender, EventArgs e) => Operator("*");
         private void btnDivide_Click(object sender, EventArgs e) => Operator("/");
-
         // Equals button
         private void btnEquals_Click(object sender, EventArgs e)
         {
-            try
+            if (currentHistory == txtDisplay.Text || IsLastCharOperator()) return;
+
+            if (currentExpression.Contains("/"))
             {
-                DataTable table = new DataTable();
-                var result = table.Compute(currentExpression, string.Empty);
-
-                txtDisplay.Text = currentExpression;
-
-                txtresult.Text = result.ToString();
-
-                lbhistory.Items.Add($"{currentExpression} = {result}");
-
-                currentExpression = result.ToString();
+                string[] parts = currentExpression.Split('/');
+                for (int i = 1; i < parts.Length; i++)
+                {
+                    if (string.IsNullOrWhiteSpace(parts[i]) || parts[i].Trim() == "0")
+                    {
+                        txtDisplay.Text = "Cannot divide by zero";
+                        txtresult.Text = "";
+                        currentExpression = "";
+                        return;
+                    }
+                }
             }
-            catch
-            {
-                txtDisplay.Text = "Error";
-                txtresult.Text = "";
-                currentExpression = "";
-            }
+
+            DataTable table = new DataTable();
+            var result = table.Compute(currentExpression, string.Empty);
+
+            txtDisplay.Text = currentExpression;
+            txtresult.Text = result.ToString();
+            
+            currentHistory = result.ToString();
+            lbhistory.Items.Add($"{currentExpression} = {result}");
+            
+            currentExpression = result.ToString();
         }
         // Clear button
         private void btnClear_Click(object sender, EventArgs e)
@@ -127,7 +123,7 @@ namespace Calculator_Dacal
             txtDisplay.Text = "";
             txtresult.Text = "";
             currentExpression = "";
-            isEqualsPressed = false;
+            isEqualsClicked = false;
         }
         // Exit button
         private void btnExit_Click(object sender, EventArgs e)
@@ -136,10 +132,32 @@ namespace Calculator_Dacal
         }
         private void btnBackspace_Click(object sender, EventArgs e)
         {
-            if (txtDisplay.Text.Length > 0)
+            if (!string.IsNullOrEmpty(currentExpression))
             {
-                txtDisplay.Text = txtDisplay.Text.Substring(0, txtDisplay.Text.Length - 1);
+                currentExpression = currentExpression.Remove(currentExpression.Length - 1);
+                txtDisplay.Text = currentExpression;
             }
+        }
+        private void btnPercent_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(currentExpression)) return;
+
+            int i = currentExpression.Length - 1;
+            while (i >= 0 && (char.IsDigit(currentExpression[i]) || currentExpression[i] == '.'))
+            {
+                i--;
+            }
+
+            string lastNumber = currentExpression.Substring(i + 1);
+            if (double.TryParse(lastNumber, out double num))
+            {
+                currentExpression = currentExpression.Substring(0, i + 1) + (num / 100).ToString();
+                txtDisplay.Text = currentExpression;
+            }
+        }
+        private void btnHistory_Click(object sender, EventArgs e)
+        {
+            lbhistory.Visible = !lbhistory.Visible;
         }
     }
 }
