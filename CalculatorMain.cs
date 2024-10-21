@@ -4,36 +4,69 @@ using System.Windows.Forms;
 
 namespace Calculator_Dacal
 {
-    public partial class Form1 : Form
+    public partial class Calculator : Form
     {
-        private string currentExpression;
+        private CalculatorFunction calculatorFunction;
         private bool isEqualsClicked;
-        private string currentHistory;
 
-        public Form1()
+        public Calculator()
         {
             InitializeComponent();
-            currentExpression = "";
+            calculatorFunction = new CalculatorFunction();
             isEqualsClicked = false;
+            // Enable form to capture key presses
+            this.KeyPreview = true;
+            this.KeyPress += new KeyPressEventHandler(Calculator_KeyPress);
         }
-        private bool IsLastCharOperator()
-        {
-            if (string.IsNullOrWhiteSpace(currentExpression))
-                return false;
 
-            char lastChar = currentExpression[currentExpression.Length - 1];
-            return lastChar == '+' || lastChar == '-' || lastChar == '*' || lastChar == '/';
-        }
-        private bool HasMultipleDecimalPoints()
+        private void Calculator_KeyPress(object sender, KeyPressEventArgs e)
         {
-            string[] numbers = currentExpression.Split(new char[] { '+', '-', '*', '/' });
-            foreach (string number in numbers)
+            char keyChar = e.KeyChar;
+
+            // Handle numeric keys
+            if (char.IsDigit(keyChar))
             {
-                if (number.Split('.').Length > 1)
-                    return true;
+                PassNumber(keyChar.ToString());
             }
-            return false;
+            // Handle decimal point ('.')
+            else if (keyChar == '.')
+            {
+                btnDot_Click(sender, e);
+            }
+            // Handle operators
+            else if (keyChar == '+')
+            {
+                btnAdd_Click(sender, e);
+            }
+            else if (keyChar == '-')
+            {
+                btnSubtract_Click(sender, e);
+            }
+            else if (keyChar == '*')
+            {
+                btnMultiply_Click(sender, e);
+            }
+            else if (keyChar == '/')
+            {
+                btnDivide_Click(sender, e);
+            }
+            // Handle Enter key (equals operation)
+            else if (keyChar == '=')
+            {
+                btnEquals_Click(sender, e);
+            }
+            // Handle Backspace key
+            else if (keyChar == (char)Keys.Back)
+            {
+                btnBackspace_Click(sender, e);
+            }
+            else
+            {
+                // Ignore other keys
+                e.Handled = true;
+            }
         }
+
         //Numbers
         private void PassNumber(string number)
         {
@@ -41,8 +74,8 @@ namespace Calculator_Dacal
             {
                 txtDisplay.Clear();
             }
-            currentExpression += number;
-            txtDisplay.Text = currentExpression;
+            calculatorFunction.CurrentExpression += number;
+            txtDisplay.Text = calculatorFunction.CurrentExpression;
             isEqualsClicked = false;
         }
         private void btn0_Click(object sender, EventArgs e) => PassNumber("0");
@@ -68,28 +101,50 @@ namespace Calculator_Dacal
             }
         }
         // Operations button
-        private void Operator(string operators)
-        {
-            if (!IsLastCharOperator() && !string.IsNullOrWhiteSpace(currentExpression))
-            {
-                currentExpression += operators;
-                txtDisplay.Text = currentExpression;
-                txtresult.Text = "";
-                isEqualsClicked = false;
-            }
-            else
-            {
-                return;
-            }
-        }
+        
+
+
         private void btnAdd_Click(object sender, EventArgs e) => Operator("+");
         private void btnSubtract_Click(object sender, EventArgs e) => Operator("-");
         private void btnMultiply_Click(object sender, EventArgs e) => Operator("*");
         private void btnDivide_Click(object sender, EventArgs e) => Operator("/");
+
+        private void Operator(string operators)
+        {
+            // Trim spaces from the current expression
+            currentExpression = currentExpression.Trim();
+
+            // If the current expression is empty, just add the operator
+            if (string.IsNullOrWhiteSpace(currentExpression))
+            {
+                currentExpression += " "+ operators + " ";
+            }
+            else
+            {
+                // Check if the last character is an operator
+                if (IsLastCharOperator())
+                {
+                    // Replace the last operator with the new operator
+                    currentExpression = currentExpression.Substring(0, currentExpression.Length - 1) + operators + " ";
+                }
+                else
+                {
+                    // If the last character isn't an operator, just add the new operator
+                    currentExpression += " " + operators + " ";
+                }
+            }
+
+            // Update the display
+            txtDisplay.Text = currentExpression;
+            txtresult.Text = "";
+            isEqualsClicked = false;
+        }
+
+
         // Equals button
         private void btnEquals_Click(object sender, EventArgs e)
         {
-            if (currentHistory == txtDisplay.Text || IsLastCharOperator()) return;
+            if (currentHistory == txtDisplay.Text || IsLastCharOperator() || txtDisplay.Text == "") return;
 
             if (currentExpression.Contains("/"))
             {
@@ -98,24 +153,26 @@ namespace Calculator_Dacal
                 {
                     if (string.IsNullOrWhiteSpace(parts[i]) || parts[i].Trim() == "0")
                     {
-                        txtDisplay.Text = "Cannot divide by zero";
-                        txtresult.Text = "";
+                        txtresult.Text = "Cannot be divided by 0";
                         currentExpression = "";
                         return;
                     }
                 }
             }
+            string expressionToEvaluate = currentExpression.Replace(" ", "");
 
             DataTable table = new DataTable();
-            var result = table.Compute(currentExpression, string.Empty);
+            var result = table.Compute(expressionToEvaluate, string.Empty);
+
+            double finalResult = Convert.ToDouble(result);
 
             txtDisplay.Text = currentExpression;
-            txtresult.Text = result.ToString();
+            txtresult.Text = finalResult.ToString();
             
             currentHistory = result.ToString();
-            lbhistory.Items.Add($"{currentExpression} = {result}");
+            lbhistory.Items.Add($"{currentExpression} = {finalResult}");
             
-            currentExpression = result.ToString();
+            currentExpression = finalResult.ToString();
         }
         // Clear button
         private void btnClear_Click(object sender, EventArgs e)
