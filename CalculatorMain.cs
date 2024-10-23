@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Data;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Calculator_Dacal
@@ -7,16 +7,20 @@ namespace Calculator_Dacal
     public partial class Calculator : Form
     {
         private CalculatorFunction calculatorFunction;
-        private bool isEqualsClicked;
-
         public Calculator()
         {
             InitializeComponent();
             calculatorFunction = new CalculatorFunction();
-            isEqualsClicked = false;
+            txtresult.Text = "0";
+
             // Enable form to capture key presses
             this.KeyPreview = true;
             this.KeyPress += new KeyPressEventHandler(Calculator_KeyPress);
+            this.KeyDown += new KeyEventHandler(Calculator_KeyDown);
+
+            lbHistory.DrawItem += new DrawItemEventHandler(lbhistory_DrawItem); // Attach event handler
+            lbHistory.ItemHeight = 25;
+
         }
 
         private void Calculator_KeyPress(object sender, KeyPressEventArgs e)
@@ -26,7 +30,11 @@ namespace Calculator_Dacal
             // Handle numeric keys
             if (char.IsDigit(keyChar))
             {
-                PassNumber(keyChar.ToString());
+                PassNumber(keyChar.ToString()); 
+            }
+            else if (keyChar == '%')
+            {
+                btnPercent_Click(sender, e);
             }
             // Handle decimal point ('.')
             else if (keyChar == '.')
@@ -66,18 +74,71 @@ namespace Calculator_Dacal
                 e.Handled = true;
             }
         }
+        private void Calculator_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Handle Escape key to clear
+            if (e.KeyCode == Keys.Escape)
+            {
+                btnClear_Click(sender, e); // Call the Clear button's click event to clear the input
+            }
+            if (e.Shift && e.KeyCode == Keys.D5)
+            {
+                // Simulate pressing the % button
+                btnPercent.PerformClick();
+
+                // Mark the event as handled
+                e.Handled = true;
+            }
+        }
+
+        // Custom drawing of ListBox items
+        private void lbhistory_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            e.DrawBackground();
+
+            // Get the current item text
+            string text = lbHistory.Items[e.Index].ToString();
+
+            // Skip drawing for empty lines (blank spaces)
+            if (string.IsNullOrWhiteSpace(text))
+                return;
+
+            // Determine if the item is an expression or result based on its format
+            bool isResult = double.TryParse(text.Trim(), out _); // Check if it's a result
+
+            // Create the fonts for drawing
+            using (Font expressionFont = new Font("Gadugi", 12, FontStyle.Regular))
+            using (Font resultFont = new Font("Gadugi", 15, FontStyle.Bold))
+            {
+                // Measure the width of the text
+                SizeF textSize = e.Graphics.MeasureString(text, isResult ? resultFont : expressionFont);
+
+                // Calculate the x position for right alignment
+                float rightAlignX = e.Bounds.Right - textSize.Width - 10; // 10 pixels padding from the right edge
+
+                // Draw the text at the calculated position
+                e.Graphics.DrawString(text, isResult ? resultFont : expressionFont, Brushes.Black, rightAlignX, e.Bounds.Top);
+            }
+
+            e.DrawFocusRectangle(); // Optional: show focus rectangle for selected item
+        }
+
+
+
+
 
         //Numbers
         private void PassNumber(string number)
         {
-            if (txtDisplay.Text == "Cannot divide by zero")
-            {
-                txtDisplay.Clear();
-            }
-            calculatorFunction.CurrentExpression += number;
-            txtDisplay.Text = calculatorFunction.CurrentExpression;
-            isEqualsClicked = false;
+            calculatorFunction.PassNumber(number);
+
+            // Only show the current number in txtResult
+            txtresult.Text = calculatorFunction.GetCurrentNumber();
+
+            // Do not update txtDisplay until an operator is clicked
+            calculatorFunction.IsEqualsClicked = false;
         }
+
         private void btn0_Click(object sender, EventArgs e) => PassNumber("0");
         private void btn1_Click(object sender, EventArgs e) => PassNumber("1");
         private void btn2_Click(object sender, EventArgs e) => PassNumber("2");
@@ -91,97 +152,81 @@ namespace Calculator_Dacal
         //Decimal Point
         private void btnDot_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(currentExpression) || IsLastCharOperator())
+            if (string.IsNullOrEmpty(calculatorFunction.currentExpression) || calculatorFunction.IsLastCharOperator())
             {
                 PassNumber("0.");
             }
-            else if (!HasMultipleDecimalPoints())
+            else if (!calculatorFunction.HasMultipleDecimalPoints())
             {
                 PassNumber(".");
             }
         }
+
         // Operations button
-        
-
-
-        private void btnAdd_Click(object sender, EventArgs e) => Operator("+");
-        private void btnSubtract_Click(object sender, EventArgs e) => Operator("-");
-        private void btnMultiply_Click(object sender, EventArgs e) => Operator("*");
-        private void btnDivide_Click(object sender, EventArgs e) => Operator("/");
-
-        private void Operator(string operators)
+        private void btnAdd_Click(object sender, EventArgs e) => PassOperator("+");
+        private void btnSubtract_Click(object sender, EventArgs e) => PassOperator("-");
+        private void btnMultiply_Click(object sender, EventArgs e) => PassOperator("*");
+        private void btnDivide_Click(object sender, EventArgs e) => PassOperator("/");
+        private void PassOperator(string operators)
         {
-            // Trim spaces from the current expression
-            currentExpression = currentExpression.Trim();
+            calculatorFunction.Operator(operators);
 
-            // If the current expression is empty, just add the operator
-            if (string.IsNullOrWhiteSpace(currentExpression))
-            {
-                currentExpression += " "+ operators + " ";
-            }
-            else
-            {
-                // Check if the last character is an operator
-                if (IsLastCharOperator())
-                {
-                    // Replace the last operator with the new operator
-                    currentExpression = currentExpression.Substring(0, currentExpression.Length - 1) + operators + " ";
-                }
-                else
-                {
-                    // If the last character isn't an operator, just add the new operator
-                    currentExpression += " " + operators + " ";
-                }
-            }
+            // Update txtDisplay to show the complete expression
+            txtDisplay.Text = calculatorFunction.currentExpression;
 
-            // Update the display
-            txtDisplay.Text = currentExpression;
-            txtresult.Text = "";
-            isEqualsClicked = false;
+            // Show the last number in txtResult
+            txtresult.Text = calculatorFunction.GetCurrentNumber();
+            calculatorFunction.IsEqualsClicked = false; // Reset equals flag
+        
         }
-
 
         // Equals button
         private void btnEquals_Click(object sender, EventArgs e)
         {
-            if (currentHistory == txtDisplay.Text || IsLastCharOperator() || txtDisplay.Text == "") return;
+            // Get the current expression and calculate the result
+            string expression = calculatorFunction.currentExpression;
+            double finalResult;
+            string result = calculatorFunction.EvaluateExpression(expression, out finalResult);
 
-            if (currentExpression.Contains("/"))
+            if (result == "Success")
             {
-                string[] parts = currentExpression.Split('/');
-                for (int i = 1; i < parts.Length; i++)
-                {
-                    if (string.IsNullOrWhiteSpace(parts[i]) || parts[i].Trim() == "0")
-                    {
-                        txtresult.Text = "Cannot be divided by 0";
-                        currentExpression = "";
-                        return;
-                    }
-                }
+                // Display the expression and the result
+                txtDisplay.Text = expression; // Show the current expression
+                txtresult.Text = finalResult.ToString(); // Show the result
+
+                // Format the history entry for the expression
+                string historyEntry = $"{expression} = "; // Entry for the expression
+
+                // Add the expression entry to ListBox (history)
+                lbHistory.Items.Add(historyEntry); // Add expression
+
+                // Add the result entry to ListBox (history)
+                lbHistory.Items.Add(finalResult.ToString()); // Add result on a new line
+
+                // Add a blank entry for spacing
+                lbHistory.Items.Add(""); // This creates a blank line for separation
+
+                // Update the current expression for future calculations
+                calculatorFunction.currentExpression = finalResult.ToString(); // Set the current expression to the result
             }
-            string expressionToEvaluate = currentExpression.Replace(" ", "");
-
-            DataTable table = new DataTable();
-            var result = table.Compute(expressionToEvaluate, string.Empty);
-
-            double finalResult = Convert.ToDouble(result);
-
-            txtDisplay.Text = currentExpression;
-            txtresult.Text = finalResult.ToString();
-            
-            currentHistory = result.ToString();
-            lbhistory.Items.Add($"{currentExpression} = {finalResult}");
-            
-            currentExpression = finalResult.ToString();
+            else
+            {
+                // Display error message
+                txtresult.Text = result;
+                calculatorFunction.Clear(); // Reset the calculator for next input
+            }
         }
+
+
+
         // Clear button
         private void btnClear_Click(object sender, EventArgs e)
         {
             txtDisplay.Text = "";
             txtresult.Text = "";
-            currentExpression = "";
-            isEqualsClicked = false;
+            calculatorFunction.Clear();
         }
+
         // Exit button
         private void btnExit_Click(object sender, EventArgs e)
         {
@@ -189,32 +234,24 @@ namespace Calculator_Dacal
         }
         private void btnBackspace_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(currentExpression))
-            {
-                currentExpression = currentExpression.Remove(currentExpression.Length - 1);
-                txtDisplay.Text = currentExpression;
-            }
+            calculatorFunction.Backspace();
+            txtresult.Text = calculatorFunction.currentExpression;
         }
         private void btnPercent_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(currentExpression)) return;
-
-            int i = currentExpression.Length - 1;
-            while (i >= 0 && (char.IsDigit(currentExpression[i]) || currentExpression[i] == '.'))
+            if (!string.IsNullOrWhiteSpace(calculatorFunction.currentExpression))
             {
-                i--;
-            }
+                calculatorFunction.CalculatePercentage();
 
-            string lastNumber = currentExpression.Substring(i + 1);
-            if (double.TryParse(lastNumber, out double num))
-            {
-                currentExpression = currentExpression.Substring(0, i + 1) + (num / 100).ToString();
-                txtDisplay.Text = currentExpression;
+                // Update the display with the current number
+                txtresult.Text = calculatorFunction.GetCurrentNumber();
+
+                // Do not immediately update txtDisplay, only update it when the next operator is clicked
             }
         }
         private void btnHistory_Click(object sender, EventArgs e)
         {
-            lbhistory.Visible = !lbhistory.Visible;
+            lbHistory.Visible = !lbHistory.Visible;
         }
     }
 }
