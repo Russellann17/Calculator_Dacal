@@ -1,157 +1,51 @@
 ﻿using System;
 using System.Data;
 
-namespace Calculator_Dacal
+namespace CalculatorApp
 {
     public class CalculatorFunction
     {
-        public string currentExpression { get; set; }
-        public bool IsEqualsClicked { get; set; }
+        public bool IsEqualClick { get; set; } = false;
+        public bool IsOperatorClick { get; set; } = false;
+        public bool IsZeroHandle { get; set; } = false;
+        public bool IsCompute { get; set; } = false;
 
-        public CalculatorFunction()
+        //Check if the last character is an operator
+        //For Replacing the existing operator with the new operator
+        public bool IsLastCharOperator(string value)
         {
-            currentExpression = "";
-            IsEqualsClicked = false;
-        }
-        public bool IsLastCharOperator()
-        {
-            if (string.IsNullOrEmpty(currentExpression)) return false;
-
-            string trimExpression = currentExpression.Trim();
+            // Check for Null or Empty String
+            if (string.IsNullOrEmpty(value)) return false;
+            //Trim the Input
+            string trimExpression = value.Trim();
+            //Get the Last Character
             char lastChar = trimExpression[trimExpression.Length - 1];
-
+            //Check if the Last Character is an Operator
             return lastChar == '+' || lastChar == '-' || lastChar == '*' || lastChar == '/';
         }
-
-        public bool HasMultipleDecimalPoints()
+        //Remove the spaces and commas
+        public string TrimExpression(string displayValue)
         {
-            int lastOperatorIndex = currentExpression.LastIndexOfAny(new char[] { '+', '-', '*', '/' });
-            string currentNumber = lastOperatorIndex == -1 ? currentExpression : currentExpression.Substring(lastOperatorIndex + 1);
-            
-            if (currentExpression.EndsWith("."))
-            {
-                return true; // Do not allow adding another decimal after a '.'
-            }
-
-            if (currentNumber.Contains("."))
-            {
-                return true;
-            }
-
-            return false;
+            displayValue = displayValue.Replace(",", "");
+            return displayValue.Replace(" ", "");
         }
-        public void PassNumber(string number)
+        //Evaluate the expression
+        public string solveExpression(string trimExpression)
         {
-            if (string.IsNullOrEmpty(currentExpression) || number != "0")
+            if (trimExpression.Contains("/0"))  //Check for Division by 0
             {
-                currentExpression += number;
-            }
-            else if (currentExpression != "0") // Prevent multiple leading zeros
-            {
-                currentExpression += number;
-            }
-            else if (!currentExpression.EndsWith("0") || number != "0")
-            {
-                currentExpression += number;
-            }
-
-            IsEqualsClicked = false;
-        }
-
-        public string GetCurrentNumber()
-        {
-            var parts = currentExpression.Split(new char[] { '+', '-', '*', '/' }, StringSplitOptions.RemoveEmptyEntries);
-            return parts.Length > 0 ? parts[parts.Length - 1] : "0";
-        }
-        public void Operator(string operators)
-        {
-            currentExpression = currentExpression.Trim();
-
-            if (IsLastCharOperator())
-            {
-                currentExpression = currentExpression.Substring(0, currentExpression.Length - 1).Trim() + " " + operators + " ";
-            }
-            else if (!string.IsNullOrEmpty(currentExpression))
-            {
-                currentExpression += " " + operators + " ";
-            }
-        }
-
-        public string EvaluateExpression(string currentExpression, out double res)
-        {
-            res = 0;
-            currentExpression = currentExpression.Trim();
-
-            if (string.IsNullOrWhiteSpace(currentExpression) || IsLastCharOperator())
-            {
-                return "Incomplete expression";
-            }
-
-            if (currentExpression.Contains("/"))
-            {
-                string[] parts = currentExpression.Split('/');
-                for (int i = 1; i < parts.Length; i++)
-                {
-                    if (string.IsNullOrWhiteSpace(parts[i]) || parts[i].Trim() == "0")
-                    {
-                        return "Cannot be divided by 0";
-                    }
-                }
+                return "Cannot be divided by 0";
             }
             try
             {
-                string expressionToCompute = currentExpression.Replace(" ", "");
                 DataTable table = new DataTable();
-                var result = table.Compute(expressionToCompute, string.Empty);
-
-                res = Convert.ToDouble(result);
-
-                return "Success";
+                var result = table.Compute(trimExpression, string.Empty); //solve the expression
+                return result.ToString();
             }
-            catch (Exception ex)
+            catch (OverflowException) //If the result exceeds the maximum allowable value for a numeric type
             {
-                return $"Error evaluating expressions: {ex.Message}";
+                return "Too large to compute";
             }
         }
-
-        public void Clear()
-        {
-            currentExpression = "";
-            IsEqualsClicked = false;
-        }
-
-        public void Backspace()
-        {
-            if (!string.IsNullOrEmpty(currentExpression))
-            {
-                currentExpression = currentExpression.Remove(currentExpression.Length - 1, 1);
-            }
-        }
-
-        public void CalculatePercentage()
-        {
-            if (string.IsNullOrWhiteSpace(currentExpression)) return;
-
-            int i = currentExpression.Length - 1;
-
-            // Find the last number in the expression
-            while (i >= 0 && (char.IsDigit(currentExpression[i]) || currentExpression[i] == '.'))
-            {
-                i--;
-            }
-
-            string lastNumber = currentExpression.Substring(i + 1);
-
-            // Calculate the percentage
-            if (double.TryParse(lastNumber, out double num))
-            {
-                double percentage = num / 100; // Calculate the percentage
-                currentExpression = currentExpression.Remove(i + 1); // Remove last number
-                currentExpression += percentage.ToString(); // Append percentage to the expression
-            }
-        }
-
-
-
     }
 }

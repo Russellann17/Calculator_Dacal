@@ -53,10 +53,22 @@
     <Compile Include="CalculatorMain.Designer.cs">
       <DependentUpon>CalculatorMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormDesign\RoundButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="FormDesign\RoundedForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormDesign\RoundPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="CalculatorMain.resx">
       <DependentUpon>CalculatorMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormDesign\RoundedForm.resx">
+      <DependentUpon>RoundedForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -81,9 +93,8 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <None Include="Resources\delete-back.png" />
+    <Content Include="Resources\delete-back.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
