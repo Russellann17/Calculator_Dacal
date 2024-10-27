@@ -388,7 +388,6 @@
             this.txtDisplay.ReadOnly = true;
             this.txtDisplay.Size = new System.Drawing.Size(372, 36);
             this.txtDisplay.TabIndex = 18;
-            this.txtDisplay.Text = "000";
             this.txtDisplay.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // txtresult
@@ -407,7 +406,6 @@
             this.txtresult.ReadOnly = true;
             this.txtresult.Size = new System.Drawing.Size(372, 54);
             this.txtresult.TabIndex = 17;
-            this.txtresult.Text = "0000";
             this.txtresult.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // roundedPanel2
