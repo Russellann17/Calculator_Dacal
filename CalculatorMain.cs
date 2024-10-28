@@ -53,6 +53,10 @@ namespace Calculator_Dacal
             {
                 History_Click(sender, e);
             }
+            else if(e.KeyChar == 'n') // n - to perform negative value button
+            {
+                Negative_Click(sender, e);
+            }
             else
             {
                 e.Handled = true; // Ignore invalid input
@@ -129,7 +133,11 @@ namespace Calculator_Dacal
         private void OperatorValue_Click(object sender, EventArgs e)
         {
             Button operatorValue = (Button)sender;
-            if (calculatorFunction.IsEqualClick)    //Equal button Handling - resets the calculator to prepare for new input
+            if (txtresult.Text == "Cannot be divided by 0" || txtresult.Text == "Too large to compute")   //Handling Division by 0 - checks for division by zero and updates the result
+            { 
+                ResetCalculator();
+            }
+                if (calculatorFunction.IsEqualClick)    //Equal button Handling - resets the calculator to prepare for new input
             {
                 txtDisplay.Clear();
                 calculatorFunction.IsEqualClick = false;
@@ -175,7 +183,7 @@ namespace Calculator_Dacal
             calculatorFunction.IsCompute = true;
             string finalResult = result;
 
-            if (result == "Cannot be divided by 0")   //Handling Division by 0 - checks for division by zero and updates the result
+            if (result == "Cannot be divided by 0" && result == "Too large to compute")   //Handling Division by 0 - checks for division by zero and updates the result
             {
                 txtresult.Text = result;
             }
@@ -235,7 +243,7 @@ namespace Calculator_Dacal
                 }
             }
             //If textbox is empty or 0. Clear all boolean methods and refresh to its original value.
-            if (txtresult.Text == "0" || txtresult.Text == "")
+            if (txtresult.Text == "0" || txtresult.Text == "" || txtresult.Text == "-")
             {
                 ResetCalculator();
             }
