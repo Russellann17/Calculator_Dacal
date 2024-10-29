@@ -10,6 +10,16 @@ namespace Calculator_Dacal.FormDesign // Adjust based on your project name
         public int BorderRadius { get; set; } = 20;
         public Image ButtonImage { get; set; }
 
+        // Settable hover color
+        public Color HoverColor { get; set; } = Color.LightGray;
+
+        private Color originalBackColor;
+
+        public RoundButton()
+        {
+            originalBackColor = this.BackColor;
+        }
+
         protected override void OnPaint(PaintEventArgs pevent)
         {
             base.OnPaint(pevent);
@@ -32,6 +42,21 @@ namespace Calculator_Dacal.FormDesign // Adjust based on your project name
                 TextRenderer.DrawText(graphics, this.Text, this.Font, ClientRectangle, this.ForeColor,
                     TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
             }
+        }
+
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            base.OnMouseEnter(e);
+            originalBackColor = this.BackColor; // Store original color
+            this.BackColor = HoverColor; // Change to assigned hover color
+            Invalidate(); // Redraw to show hover effect
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+            this.BackColor = originalBackColor; // Reset to original color
+            Invalidate(); // Redraw to remove hover effect
         }
 
         private GraphicsPath GetRoundedRectanglePath(Rectangle rect, int radius)

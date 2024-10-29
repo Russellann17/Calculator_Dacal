@@ -50,11 +50,11 @@
             this.btnAdd = new Calculator_Dacal.FormDesign.RoundButton();
             this.btnPercent = new Calculator_Dacal.FormDesign.RoundButton();
             this.btnBackspace = new Calculator_Dacal.FormDesign.RoundButton();
-            this.btnClear = new Calculator_Dacal.FormDesign.RoundButton();
             this.roundedPanel1 = new Calculator_Dacal.FormDesign.RoundedPanel();
             this.txtDisplay = new System.Windows.Forms.TextBox();
             this.txtresult = new System.Windows.Forms.TextBox();
             this.roundedPanel2 = new Calculator_Dacal.FormDesign.RoundedPanel();
+            this.btnClear = new Calculator_Dacal.FormDesign.RoundButton();
             this.btnNegative = new Calculator_Dacal.FormDesign.RoundButton();
             this.btnDecimal = new Calculator_Dacal.FormDesign.RoundButton();
             this.lbHistory = new System.Windows.Forms.ListBox();
@@ -78,6 +78,7 @@
             // 
             this.btnExit.Dock = System.Windows.Forms.DockStyle.Right;
             this.btnExit.FlatAppearance.BorderSize = 0;
+            this.btnExit.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(47)))), ((int)(((byte)(105)))));
             this.btnExit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnExit.Image = ((System.Drawing.Image)(resources.GetObject("btnExit.Image")));
             this.btnExit.Location = new System.Drawing.Point(301, 0);
@@ -94,13 +95,14 @@
             this.label1.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(79, 20);
+            this.label1.Size = new System.Drawing.Size(102, 25);
             this.label1.TabIndex = 2;
             this.label1.Text = "Calculator";
             // 
             // btnHistory
             // 
             this.btnHistory.FlatAppearance.BorderSize = 0;
+            this.btnHistory.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.btnHistory.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnHistory.ForeColor = System.Drawing.Color.Transparent;
             this.btnHistory.Image = ((System.Drawing.Image)(resources.GetObject("btnHistory.Image")));
@@ -118,6 +120,7 @@
             this.btn0.BorderRadius = 20;
             this.btn0.ButtonImage = null;
             this.btn0.Font = new System.Drawing.Font("Segoe UI Semibold", 15F, System.Drawing.FontStyle.Bold);
+            this.btn0.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(47)))), ((int)(((byte)(105)))));
             this.btn0.Location = new System.Drawing.Point(84, 240);
             this.btn0.Name = "btn0";
             this.btn0.Size = new System.Drawing.Size(75, 54);
@@ -132,6 +135,7 @@
             this.btn3.BorderRadius = 20;
             this.btn3.ButtonImage = null;
             this.btn3.Font = new System.Drawing.Font("Segoe UI Semibold", 15F, System.Drawing.FontStyle.Bold);
+            this.btn3.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(47)))), ((int)(((byte)(105)))));
             this.btn3.Location = new System.Drawing.Point(163, 181);
             this.btn3.Name = "btn3";
             this.btn3.Size = new System.Drawing.Size(75, 54);
@@ -146,6 +150,7 @@
             this.btn2.BorderRadius = 20;
             this.btn2.ButtonImage = null;
             this.btn2.Font = new System.Drawing.Font("Segoe UI Semibold", 15F, System.Drawing.FontStyle.Bold);
+            this.btn2.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(47)))), ((int)(((byte)(105)))));
             this.btn2.Location = new System.Drawing.Point(84, 181);
             this.btn2.Name = "btn2";
             this.btn2.Size = new System.Drawing.Size(75, 54);
@@ -160,6 +165,7 @@
             this.btn1.BorderRadius = 20;
             this.btn1.ButtonImage = null;
             this.btn1.Font = new System.Drawing.Font("Segoe UI Semibold", 15F, System.Drawing.FontStyle.Bold);
+            this.btn1.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(47)))), ((int)(((byte)(105)))));
             this.btn1.Location = new System.Drawing.Point(6, 181);
             this.btn1.Name = "btn1";
             this.btn1.Size = new System.Drawing.Size(75, 54);
@@ -174,6 +180,7 @@
             this.btn6.BorderRadius = 20;
             this.btn6.ButtonImage = null;
             this.btn6.Font = new System.Drawing.Font("Segoe UI Semibold", 15F, System.Drawing.FontStyle.Bold);
+            this.btn6.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(47)))), ((int)(((byte)(105)))));
             this.btn6.Location = new System.Drawing.Point(163, 122);
             this.btn6.Name = "btn6";
             this.btn6.Size = new System.Drawing.Size(75, 54);
@@ -188,6 +195,7 @@
             this.btn5.BorderRadius = 20;
             this.btn5.ButtonImage = null;
             this.btn5.Font = new System.Drawing.Font("Segoe UI Semibold", 15F, System.Drawing.FontStyle.Bold);
+            this.btn5.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(47)))), ((int)(((byte)(105)))));
             this.btn5.Location = new System.Drawing.Point(84, 122);
             this.btn5.Name = "btn5";
             this.btn5.Size = new System.Drawing.Size(75, 54);
@@ -202,6 +210,7 @@
             this.btn4.BorderRadius = 20;
             this.btn4.ButtonImage = null;
             this.btn4.Font = new System.Drawing.Font("Segoe UI Semibold", 15F, System.Drawing.FontStyle.Bold);
+            this.btn4.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(47)))), ((int)(((byte)(105)))));
             this.btn4.Location = new System.Drawing.Point(6, 122);
             this.btn4.Name = "btn4";
             this.btn4.Size = new System.Drawing.Size(75, 54);
@@ -216,6 +225,7 @@
             this.btn9.BorderRadius = 20;
             this.btn9.ButtonImage = null;
             this.btn9.Font = new System.Drawing.Font("Segoe UI Semibold", 15F, System.Drawing.FontStyle.Bold);
+            this.btn9.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(47)))), ((int)(((byte)(105)))));
             this.btn9.Location = new System.Drawing.Point(163, 64);
             this.btn9.Name = "btn9";
             this.btn9.Size = new System.Drawing.Size(75, 54);
@@ -230,6 +240,7 @@
             this.btn8.BorderRadius = 20;
             this.btn8.ButtonImage = null;
             this.btn8.Font = new System.Drawing.Font("Segoe UI Semibold", 15F, System.Drawing.FontStyle.Bold);
+            this.btn8.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(47)))), ((int)(((byte)(105)))));
             this.btn8.Location = new System.Drawing.Point(84, 64);
             this.btn8.Name = "btn8";
             this.btn8.Size = new System.Drawing.Size(75, 54);
@@ -243,7 +254,10 @@
             this.btn7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(98)))), ((int)(((byte)(146)))));
             this.btn7.BorderRadius = 20;
             this.btn7.ButtonImage = null;
+            this.btn7.FlatAppearance.BorderSize = 0;
+            this.btn7.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn7.Font = new System.Drawing.Font("Segoe UI Semibold", 15F, System.Drawing.FontStyle.Bold);
+            this.btn7.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(47)))), ((int)(((byte)(105)))));
             this.btn7.Location = new System.Drawing.Point(6, 64);
             this.btn7.Name = "btn7";
             this.btn7.Size = new System.Drawing.Size(75, 54);
@@ -258,6 +272,7 @@
             this.btnEquals.BorderRadius = 20;
             this.btnEquals.ButtonImage = null;
             this.btnEquals.Font = new System.Drawing.Font("Segoe UI Black", 18F, System.Drawing.FontStyle.Bold);
+            this.btnEquals.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(173)))), ((int)(((byte)(20)))), ((int)(((byte)(87)))));
             this.btnEquals.Location = new System.Drawing.Point(244, 240);
             this.btnEquals.Name = "btnEquals";
             this.btnEquals.Size = new System.Drawing.Size(75, 54);
@@ -272,6 +287,7 @@
             this.btnDivide.BorderRadius = 20;
             this.btnDivide.ButtonImage = null;
             this.btnDivide.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Bold);
+            this.btnDivide.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(173)))), ((int)(((byte)(20)))), ((int)(((byte)(87)))));
             this.btnDivide.Location = new System.Drawing.Point(242, 181);
             this.btnDivide.Name = "btnDivide";
             this.btnDivide.Size = new System.Drawing.Size(75, 54);
@@ -286,6 +302,7 @@
             this.btnMultiply.BorderRadius = 20;
             this.btnMultiply.ButtonImage = null;
             this.btnMultiply.Font = new System.Drawing.Font("Segoe UI Black", 16F, System.Drawing.FontStyle.Bold);
+            this.btnMultiply.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(173)))), ((int)(((byte)(20)))), ((int)(((byte)(87)))));
             this.btnMultiply.Location = new System.Drawing.Point(242, 122);
             this.btnMultiply.Name = "btnMultiply";
             this.btnMultiply.Size = new System.Drawing.Size(75, 54);
@@ -300,6 +317,7 @@
             this.btnSubtract.BorderRadius = 20;
             this.btnSubtract.ButtonImage = null;
             this.btnSubtract.Font = new System.Drawing.Font("Segoe UI Black", 16F, System.Drawing.FontStyle.Bold);
+            this.btnSubtract.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(173)))), ((int)(((byte)(20)))), ((int)(((byte)(87)))));
             this.btnSubtract.Location = new System.Drawing.Point(242, 64);
             this.btnSubtract.Name = "btnSubtract";
             this.btnSubtract.Size = new System.Drawing.Size(75, 54);
@@ -314,6 +332,7 @@
             this.btnAdd.BorderRadius = 20;
             this.btnAdd.ButtonImage = null;
             this.btnAdd.Font = new System.Drawing.Font("Segoe UI Black", 16F, System.Drawing.FontStyle.Bold);
+            this.btnAdd.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(173)))), ((int)(((byte)(20)))), ((int)(((byte)(87)))));
             this.btnAdd.Location = new System.Drawing.Point(242, 6);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(75, 54);
@@ -328,6 +347,7 @@
             this.btnPercent.BorderRadius = 20;
             this.btnPercent.ButtonImage = null;
             this.btnPercent.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Bold);
+            this.btnPercent.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(173)))), ((int)(((byte)(20)))), ((int)(((byte)(87)))));
             this.btnPercent.Location = new System.Drawing.Point(163, 6);
             this.btnPercent.Name = "btnPercent";
             this.btnPercent.Size = new System.Drawing.Size(75, 54);
@@ -341,26 +361,13 @@
             this.btnBackspace.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(194)))), ((int)(((byte)(24)))), ((int)(((byte)(92)))));
             this.btnBackspace.BorderRadius = 20;
             this.btnBackspace.ButtonImage = ((System.Drawing.Image)(resources.GetObject("btnBackspace.ButtonImage")));
+            this.btnBackspace.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(173)))), ((int)(((byte)(20)))), ((int)(((byte)(87)))));
             this.btnBackspace.Location = new System.Drawing.Point(84, 6);
             this.btnBackspace.Name = "btnBackspace";
             this.btnBackspace.Size = new System.Drawing.Size(75, 54);
             this.btnBackspace.TabIndex = 56;
             this.btnBackspace.UseVisualStyleBackColor = false;
             this.btnBackspace.Click += new System.EventHandler(this.Backspace_Click);
-            // 
-            // btnClear
-            // 
-            this.btnClear.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(194)))), ((int)(((byte)(24)))), ((int)(((byte)(92)))));
-            this.btnClear.BorderRadius = 20;
-            this.btnClear.ButtonImage = null;
-            this.btnClear.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Bold);
-            this.btnClear.Location = new System.Drawing.Point(6, 6);
-            this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(72, 54);
-            this.btnClear.TabIndex = 55;
-            this.btnClear.Text = "C";
-            this.btnClear.UseVisualStyleBackColor = false;
-            this.btnClear.Click += new System.EventHandler(this.ClearAll_Click);
             // 
             // roundedPanel1
             // 
@@ -413,9 +420,9 @@
             // 
             this.roundedPanel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(251)))), ((int)(((byte)(253)))));
             this.roundedPanel2.BorderRadius = 20;
+            this.roundedPanel2.Controls.Add(this.btnClear);
             this.roundedPanel2.Controls.Add(this.btnNegative);
             this.roundedPanel2.Controls.Add(this.btnDecimal);
-            this.roundedPanel2.Controls.Add(this.btnClear);
             this.roundedPanel2.Controls.Add(this.btn0);
             this.roundedPanel2.Controls.Add(this.btnBackspace);
             this.roundedPanel2.Controls.Add(this.btn3);
@@ -438,12 +445,28 @@
             this.roundedPanel2.Size = new System.Drawing.Size(329, 304);
             this.roundedPanel2.TabIndex = 75;
             // 
+            // btnClear
+            // 
+            this.btnClear.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(194)))), ((int)(((byte)(24)))), ((int)(((byte)(92)))));
+            this.btnClear.BorderRadius = 20;
+            this.btnClear.ButtonImage = null;
+            this.btnClear.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Bold);
+            this.btnClear.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(173)))), ((int)(((byte)(20)))), ((int)(((byte)(87)))));
+            this.btnClear.Location = new System.Drawing.Point(9, 6);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(72, 54);
+            this.btnClear.TabIndex = 75;
+            this.btnClear.Text = "C";
+            this.btnClear.UseVisualStyleBackColor = false;
+            this.btnClear.Click += new System.EventHandler(this.ClearAll_Click);
+            // 
             // btnNegative
             // 
             this.btnNegative.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(98)))), ((int)(((byte)(146)))));
             this.btnNegative.BorderRadius = 20;
             this.btnNegative.ButtonImage = null;
             this.btnNegative.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnNegative.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(47)))), ((int)(((byte)(105)))));
             this.btnNegative.Location = new System.Drawing.Point(163, 240);
             this.btnNegative.Name = "btnNegative";
             this.btnNegative.Size = new System.Drawing.Size(75, 54);
@@ -458,6 +481,7 @@
             this.btnDecimal.BorderRadius = 20;
             this.btnDecimal.ButtonImage = null;
             this.btnDecimal.Font = new System.Drawing.Font("Segoe UI Black", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDecimal.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(47)))), ((int)(((byte)(105)))));
             this.btnDecimal.Location = new System.Drawing.Point(6, 240);
             this.btnDecimal.Name = "btnDecimal";
             this.btnDecimal.Size = new System.Drawing.Size(75, 54);
@@ -525,7 +549,6 @@
         private FormDesign.RoundButton btnAdd;
         private FormDesign.RoundButton btnPercent;
         private FormDesign.RoundButton btnBackspace;
-        private FormDesign.RoundButton btnClear;
         private FormDesign.RoundedPanel roundedPanel1;
         private FormDesign.RoundedPanel roundedPanel2;
         private System.Windows.Forms.TextBox txtDisplay;
@@ -533,6 +556,7 @@
         private FormDesign.RoundButton btnNegative;
         private FormDesign.RoundButton btnDecimal;
         private System.Windows.Forms.ListBox lbHistory;
+        private FormDesign.RoundButton btnClear;
     }
 }
 

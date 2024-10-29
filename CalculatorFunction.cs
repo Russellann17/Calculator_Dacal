@@ -23,13 +23,13 @@ namespace CalculatorApp
             //Check if the Last Character is an Operator
             return lastChar == '+' || lastChar == '-' || lastChar == '*' || lastChar == '/';
         }
-        //Remove the spaces and commas
+        //--------- Remove the spaces and commas ---------
         public string TrimExpression(string displayValue)
         {
             displayValue = displayValue.Replace(",", "");
             return displayValue.Replace(" ", "");
         }
-        //Evaluate the expression
+        //--------- Evaluate the expression ---------
         public string solveExpression(string trimExpression)
         {
             if (trimExpression.Contains("/0"))  //Check for Division by 0
@@ -46,6 +46,24 @@ namespace CalculatorApp
             {
                 return "Too large to compute";
             }
+        }
+        //--------- Negative/Positive Value ---------
+        public string ToggleNegative(string result)
+        {
+            if (result == "0")
+            {
+                return result;
+            }
+            double negativeValue = double.Parse(result) * -1;   // Calculate the negative value
+            return negativeValue.ToString("#,0.##########");    // Return the formatted negative value as a string
+        }
+        //--------- Reset Boolean ---------
+        public void ResetBoolean()
+        {
+            IsZeroHandle = false;
+            IsOperatorClick = false;
+            IsEqualClick = false;
+            IsCompute = false;
         }
     }
 }

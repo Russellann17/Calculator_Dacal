@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Calculator_Dacal.FormDesign;
 using CalculatorApp;
@@ -22,39 +23,90 @@ namespace Calculator_Dacal
             lbHistory.DrawItem += new DrawItemEventHandler(lbhistory_DrawItem);
             lbHistory.ItemHeight = 25;
         }
-        //KeyPress for 0-9 button and operators
+        //--------- KeyPress ---------
+        private async void TempButtonColor(Button button, Color tempColor, int delay, Color finalColor)
+        {
+            if (button == null) return;
+
+            var originalColor = button.BackColor; // Store original color
+            button.BackColor = tempColor; // Set to temporary color
+
+            await Task.Delay(delay); // Wait for the specified delay
+
+            button.BackColor = finalColor; // Reset to the final color
+        }
+        private Button GetButtonByChar(char c)
+        {
+            switch (c)
+            {
+                case '0': return btn0;
+                case '1': return btn1;
+                case '2': return btn2;
+                case '3': return btn3;
+                case '4': return btn4;
+                case '5': return btn5;
+                case '6': return btn6;
+                case '7': return btn7;
+                case '8': return btn8;
+                case '9': return btn9;
+                case '.': return btnDecimal; 
+                case '+': return btnAdd;
+                case '-': return btnSubtract;
+                case '*': return btnMultiply;
+                case '/': return btnDivide;
+                default: return null;
+            }
+        }
         private void CalculatorMain_KeyPressed(object sender, KeyPressEventArgs e)
         {
+            Button buttonToPress = null;
+
             if (char.IsDigit(e.KeyChar) || e.KeyChar == '.') // Allow numbers from 0 to 9
             {
-                Button numberButton = new Button();
-                numberButton.Text = e.KeyChar.ToString();
-                NumValue_Click(numberButton, e); // Call the existing number handler for input validation
+                buttonToPress = GetButtonByChar(e.KeyChar); // Get the corresponding button based on the pressed character
+                if (buttonToPress != null)
+                {
+                    TempButtonColor(buttonToPress, Color.FromArgb(211, 47, 105), 200, Color.FromArgb(240, 98, 146)); // Change color temporarily
+                    NumValue_Click(buttonToPress, e);
+                }
             }
             else if (e.KeyChar == '+' || e.KeyChar == '-' || e.KeyChar == '*' || e.KeyChar == '/') // Allow basic operators (+, -, *, /)
             {
-                Button operatorButton = new Button();
-                operatorButton.Text = e.KeyChar.ToString();
-                OperatorValue_Click(operatorButton, e); // Call the existing operator handler for input validation
+                buttonToPress = GetButtonByChar(e.KeyChar);
+                if (buttonToPress != null)
+                {
+                    TempButtonColor(buttonToPress, Color.FromArgb(173, 20, 87), 200, Color.FromArgb(194, 24, 92));
+                    OperatorValue_Click(buttonToPress, e);
+                }
             }
             else if (e.KeyChar == '=') // Allow equal sign key to perform calculation
             {
+                Button equalButton = btnEquals; // Reference to the Equals button
+                TempButtonColor(equalButton, Color.FromArgb(173, 20, 87), 200, Color.FromArgb(194, 24, 92));
                 Equals_Click(sender, e);
             }
             else if (e.KeyChar == (char)Keys.Back) // backspace - to perform the backspace 
             {
+                Button backspaceButton = btnBackspace;
+                TempButtonColor(backspaceButton, Color.FromArgb(173, 20, 87), 200, Color.FromArgb(194, 24, 92));
                 Backspace_Click(sender, e);
             }
             else if (e.KeyChar == 'c') // C - to perform the clear button
             {
+                Button clearButton = btnClear;
+                TempButtonColor(clearButton, Color.FromArgb(173, 20, 87), 200, Color.FromArgb(194, 24, 92));
                 ClearAll_Click(sender, e);
             }
             else if (e.KeyChar == 'h') // H - to perform History button
             {
+                Button historyButton = btnHistory;
+                TempButtonColor(historyButton, Color.FromArgb(224, 224, 224), 200, Color.FromArgb(255, 251, 253));
                 History_Click(sender, e);
             }
             else if(e.KeyChar == 'n') // n - to perform negative value button
             {
+                Button negativeButton = btnNegative;
+                TempButtonColor(negativeButton, Color.FromArgb(211, 47, 105), 200, Color.FromArgb(240, 98, 146));
                 Negative_Click(sender, e);
             }
             else
@@ -62,102 +114,97 @@ namespace Calculator_Dacal
                 e.Handled = true; // Ignore invalid input
             }
         }
-        //Combination keys for percentage
         private void CalculatorMain_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.D5 && e.Shift) // Shift + D5 - to perform the percentage
+            {
+                TempButtonColor(btnPercent, Color.FromArgb(173, 20, 87), 100, Color.FromArgb(194, 24, 92));
                 Percent_Click(btnPercent, EventArgs.Empty);
+            }
         }
-        //Holder or the one who gets the value of decimal and numbers 0-9
+        //--------- Number Buttons ---------
         private void NumValue_Click(object sender, EventArgs e)
         {
             Button numValue = (Button)sender;
 
-            if (calculatorFunction.IsEqualClick) //Equal button Handling - resets the calculator to prepare for new input
+            if (calculatorFunction.IsEqualClick) 
             {
                 ResetCalculator();
-            }
-            if (calculatorFunction.IsOperatorClick) // Operator Handling - If operator was clicked, it clears the display.
+            }   //Equal button Handling
+            if (calculatorFunction.IsOperatorClick) 
             {
                 txtresult.Clear();
                 calculatorFunction.IsOperatorClick = false;
-            }
-            if (numValue.Text != "0" && !calculatorFunction.IsZeroHandle) // Handling Leading 0 - Changing the values when the first value is 0 and without decimal 
+            }   //Operator Handling
+            if (numValue.Text != "0" && !calculatorFunction.IsZeroHandle) 
             {
                 txtresult.Clear();
                 calculatorFunction.IsZeroHandle = true;
-            }
-            if (txtresult.Text == "" && numValue.Text == ".")  // Handling Decimal Point - Checks if the txtresult already contains decimal point you can't add another decimal point
+            }   //Handling Leading 0
+            //---- Handling Decimal Point ----
+            if (txtresult.Text == "" && numValue.Text == ".")  
             {
                 txtresult.Text = "0" + numValue.Text;
             }
-            string currentValue = txtresult.Text.Split(new char[] { '+', '-', '*', '/' }).Last(); // Prevent adding multiple decimal points
+            string currentValue = txtresult.Text.Split(new char[] { '+', '-', '*', '/' }).Last(); //Prevent adding multiple decimal points
             if (numValue.Text == "." && currentValue.Contains("."))
             {
                 return;
             }
-            if (numValue.Text == "0" && currentValue == "0") return;    //Prevent Multiple 0
-
+            if (numValue.Text == "0" && currentValue == "0") return;  //Prevent Multiple 0
             if (numValue.Text == ".")
             {
-                // If the last character is already a decimal, prevent adding another
-                if (!txtresult.Text.EndsWith("."))
+                if (!txtresult.Text.EndsWith("."))  // If the last character is already a decimal, prevent adding another
                 {
                     txtresult.Text += numValue.Text;
                 }
             }
             else
-            {
-                // If there’s already a decimal point, append the number without further formatting
-                if (txtresult.Text.Contains("."))
+            {   
+                if (txtresult.Text.Contains("."))   // If there’s already a decimal point, append the number without formatting
                 {
                     txtresult.Text += numValue.Text;
                 }
                 else
                 {
-                    // Remove existing commas for clean parsing
-                    string tempValue = txtresult.Text.Replace(",", "");
-
-                    // Append the new digit to the temporary value
-                    tempValue += numValue.Text;
-
-                    // Attempt to parse the modified string as a double
-                    if (double.TryParse(tempValue, out double parsedValue))
+                    string tempValue = txtresult.Text.Replace(",", "");     // Remove existing commas for clean parsing
+                    tempValue += numValue.Text;     // Append the new digit to the temporary value
+                    
+                    if (double.TryParse(tempValue, out double parsedValue))    // Parse the modified string as a double
                     {
-                        // Format the number with commas and up to 6 decimal places
-                        txtresult.Text = parsedValue.ToString("#,0.##########");
+                        txtresult.Text = parsedValue.ToString("#,0.##########");    // Format the number with commas and up to 6 decimal places
                     }
                 }
             }
         }
+        //--------- Operator Buttons ---------
         private void OperatorValue_Click(object sender, EventArgs e)
         {
             Button operatorValue = (Button)sender;
-            if (txtresult.Text == "Cannot be divided by 0" || txtresult.Text == "Too large to compute")   //Handling Division by 0 - checks for division by zero and updates the result
+            if (txtresult.Text == "Cannot be divided by 0" || txtresult.Text == "Too large to compute")   
             { 
                 ResetCalculator();
-            }
-                if (calculatorFunction.IsEqualClick)    //Equal button Handling - resets the calculator to prepare for new input
+            } //Handling Division by 0
+            if (calculatorFunction.IsEqualClick)    
             {
                 txtDisplay.Clear();
                 calculatorFunction.IsEqualClick = false;
-            }
-            if (calculatorFunction.IsOperatorClick) //Handling Consecutive Operator Clicks - replace with the new operator instead of add
+            } //Equal button Handling
+            //--- Handling Multiple Operator Clicks ---
+            if (calculatorFunction.IsOperatorClick) 
             {
                 txtDisplay.Text = txtDisplay.Text.Substring(0, txtDisplay.Text.Length - 1) + operatorValue.Text;
                 return;
             }
-            if (calculatorFunction.IsLastCharOperator(txtresult.Text)) //Replace the existing last operator with the new operator  
+            if (calculatorFunction.IsLastCharOperator(txtresult.Text))  
             {
                 txtDisplay.Text = txtDisplay.Text.Substring(0, txtDisplay.Text.Length - 1) + operatorValue.Text;
                 return;
             }
-            // Append the value to txtDisplay & add comma
-            double toParse;
-            if (double.TryParse(txtresult.Text, out toParse))
+            if (double.TryParse(txtresult.Text, out double toParse))
             {
                 txtDisplay.Text += " " + toParse.ToString("#,0.##########") + " " + operatorValue.Text;
-            }
+            } // Append the value to txtDisplay & add comma
             calculatorFunction.IsOperatorClick = true;
             calculatorFunction.IsZeroHandle = false;
             calculatorFunction.IsCompute = false;
@@ -167,114 +214,92 @@ namespace Calculator_Dacal
             string result;
 
             if (calculatorFunction.IsCompute) { return; }   //Prevent repeated computation
-            if (!calculatorFunction.IsEqualClick)   //Handling First Equal Click -  If wla pa naclick ang equal button it will append the value to txtdisplay
+            if (!calculatorFunction.IsEqualClick)   
             {
-                double toParse;
-                if (double.TryParse(txtresult.Text, out toParse))
+                if (double.TryParse(txtresult.Text, out double toParse))
                 {
                     txtDisplay.Text += " " + toParse.ToString("#,0.######") + " ";
                 }
                 calculatorFunction.IsEqualClick = true;
-            }
-            //For computing of result
+            } //Handling First Equal Click
+            //----- For computing of result -----
             string trimmedExpression = calculatorFunction.TrimExpression(txtDisplay.Text);
             result = calculatorFunction.solveExpression(trimmedExpression);
             calculatorFunction.IsOperatorClick = false;
             calculatorFunction.IsCompute = true;
             string finalResult = result;
 
-            if (result == "Cannot be divided by 0" && result == "Too large to compute")   //Handling Division by 0 - checks for division by zero and updates the result
+            if (result == "Cannot be divided by 0" && result == "Too large to compute")
             {
                 txtresult.Text = result;
-            }
-            else    //Format of the result
+            } //Handling Division by 0
+            else
             {
                 double parsedResult;
                 if (double.TryParse(result, out parsedResult))
                 {
-                    //It checks if parsedResult is an integer if true then it will use No decimal places format, if false it uses custom format
                     txtresult.Text = parsedResult.ToString(parsedResult % 1 == 0 ? "N0" : "#,0.##########");
                 }
                 else
                 {
                     txtresult.Text = result;
                 }
-            }
-            // Updating the History
+            } //Format of the result
             if (txtresult.Text != "Cannot be divided by 0" && txtresult.Text != "Too large to compute")
             {
                 if (lbHistory.Items.Count == 0 || lbHistory.Items[lbHistory.Items.Count - 2].ToString() != trimmedExpression)
                 {
-                    lbHistory.Items.Add(txtDisplay.Text + " ="); // Add expression
-                    lbHistory.Items.Add(txtresult.Text); // Add result on a new line
-                    lbHistory.Items.Add(""); // Add blank line for separation
+                    lbHistory.Items.AddRange(new object[] { txtDisplay.Text + " =", txtresult.Text, "" });
                 }
-            }
+            } // Update the History
         }
-        //Clear Button
+        //--------- Clear Button ---------
         private void ClearAll_Click(object sender, EventArgs e)
         {
             ResetCalculator();
         }
-        //Resets the boolean flags and clear the input and output displays
+        //--------- Reset and Clear ---------
         private void ResetCalculator()
         {
             txtDisplay.Clear();
             txtresult.Text = "0";
-            calculatorFunction.IsZeroHandle = false;
-            calculatorFunction.IsOperatorClick = false;
-            calculatorFunction.IsEqualClick = false;
-            calculatorFunction.IsCompute = false;
+            calculatorFunction.ResetBoolean();
         }
-        //BackSpace Button
+        //--------- BackSpace Button ---------
         private void Backspace_Click(object sender, EventArgs e)
         {
-            //Checking if the textbox is not empty
+            if (txtresult.Text == "Cannot be divided by 0" || txtresult.Text == "Too large to compute")
+            {
+                ResetCalculator();
+            } //Handling Division by 0
             if (txtresult.Text.Length > 0)
             {
-                //remove the last character
-                txtresult.Text = txtresult.Text.Remove(txtresult.Text.Length - 1, 1);
-
-                double toParseValue;
-
-                if (double.TryParse(txtresult.Text.Replace(",", ""), out toParseValue))
+                txtresult.Text = txtresult.Text.Remove(txtresult.Text.Length - 1, 1);   //remove the last character
+                if (double.TryParse(txtresult.Text.Replace(",", ""), out double toParseValue))
                 {
                     txtresult.Text = toParseValue.ToString("#,0.##########");
                 }
-            }
-            //If textbox is empty or 0. Clear all boolean methods and refresh to its original value.
+            }   //Checking if the textbox is not empty
             if (txtresult.Text == "0" || txtresult.Text == "" || txtresult.Text == "-")
             {
                 ResetCalculator();
-            }
+            }   //If textbox is empty or 0. Clear all boolean methods and refresh to its original value.
         }
-        //Percentage Button
+        // --------- Percentage Button ---------
         private void Percent_Click(object sender, EventArgs e)
         {
-            // Convert the current result to double
-            double currentValue;
-            // parse the current result from the textbox
+            //---- Convert the current result to double ----
+            double currentValue;   
             if (double.TryParse(txtresult.Text, out currentValue))
             {
-                // Calculate the percentage
-                double percentageValue = currentValue / 100;
-                // Update the result textbox with the percentage
-                txtresult.Text = percentageValue.ToString("#,0.##########"); // Format the output
-            }
+                double percentageValue = currentValue / 100;    // Calculate the percentage
+                txtresult.Text = percentageValue.ToString("#,0.##########"); //Update the result textbox with the percentage
+            }   // parse the current result from the textbox
         }
         //Negative Button
         private void Negative_Click(object sender, EventArgs e)
         {
-            double negativeValue = double.Parse(txtresult.Text) - (double.Parse(txtresult.Text) * 2);
-
-            if (txtresult.Text == "0")
-            {
-                return;
-            }
-            else
-            {
-                txtresult.Text = negativeValue.ToString("#,0.##########");
-            }
+            txtresult.Text = calculatorFunction.ToggleNegative(txtresult.Text);
         }
         //History Button Visibility
         private void History_Click(object sender, EventArgs e)
